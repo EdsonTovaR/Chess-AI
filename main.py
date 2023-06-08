@@ -1,20 +1,28 @@
-import random
-import pygame
-import sys
-import chess
+#se utiliza para generar números aleatorios en el juego
+import random 
+#biblioteca para el desarrollo de juegos en Python
+import pygame 
+#proporciona funciones y variables que interactúan fuertemente con el intérprete de Python
+import sys 
+#es una biblioteca de ajedrez en Python que se utiliza para modelar el tablero de ajedrez y realizar operaciones relacionadas con el ajedrez.
+import chess 
 
-board = chess.Board()
+#representa el tablero de ajedrez y realiza el seguimiento del estado del juego
+board = chess.Board() 
+#Es la anchura del tablero de ajedrez y también de la ventana del juego.
+WIDTH = 650 
 
-WIDTH = 650
-
-WIN = pygame.display.set_mode((WIDTH, WIDTH))
+#Crea una ventana del juego utilizando el módulo pygame
+WIN = pygame.display.set_mode((WIDTH, WIDTH)) 
 pygame.display.set_caption("Chess")
+#Se definen algunas constantes para representar colores en forma de tuplas RGB
 WHITE = (255, 255, 255)
 GREY = (111, 28, 70)
 YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
+#Representa una celda individual del tablero de ajedrez, guarda su ubicacion y para dibuar las celdas
 class Node:
     def __init__(self, row, col, width):
         self.row = row
@@ -65,6 +73,7 @@ class Node:
         to use blit to draw the chess pieces instead
         """
 
+#Crea una cuadrícula de celdas
 def make_grid(rows, width):
     grid = []
     gap = WIDTH // rows
@@ -78,6 +87,7 @@ def make_grid(rows, width):
                 grid[i][j].colour = GREY
     return grid
 
+#Dibuja las líneas de la cuadrícula del tablero en la ventana del juego.
 def draw_grid(win, rows, width):
     gap = width // 8
     for i in range(rows):
@@ -85,6 +95,7 @@ def draw_grid(win, rows, width):
         for j in range(rows):
             pygame.draw.line(win, BLACK, (j * gap, 0), (j * gap, width))
 
+#Actualiza la pantalla del juego
 def update_display(win, grid, rows, width):
     boardM = []
     for i in range(8):
@@ -98,6 +109,7 @@ def update_display(win, grid, rows, width):
     draw_grid(win, rows, width)
     pygame.display.update()
 
+#con unas cordenadas busca, encuentra la celda correspondiente
 def Find_Node(pos, WIDTH):
     interval = WIDTH / 8
     y, x = pos
@@ -107,6 +119,7 @@ def Find_Node(pos, WIDTH):
     pos = "" + ['a','b','c','d','e','f','g','h'][x] + f"{8-y}"
     return pos
 
+#Genera el movimiento de la máquina utilizando el algoritmo minimax
 def machine_move(boardCopy):
     max = -99999
     movement = ""
@@ -118,6 +131,7 @@ def machine_move(boardCopy):
             max = result   
     return movement
 
+#implementa el minimax para evaluar los movimientos
 def alphabeta_pruning(boardCopy,movement,depth,alpha,beta,maximizingPlayer):
     if depth == 0:
         return evaluateBoard(boardCopy,movement)
@@ -142,6 +156,7 @@ def alphabeta_pruning(boardCopy,movement,depth,alpha,beta,maximizingPlayer):
             beta = min(beta,value)
         return value
 
+#Evalua el valor del tablero
 def evaluateBoard(boardCopy,movement):
     value = 0
     boardCopy.push(chess.Move.from_uci(movement))
@@ -151,6 +166,7 @@ def evaluateBoard(boardCopy,movement):
             value += getValueOfPiece(piece)
     return value
 
+#evalua una pieza de ajedrez con respecto al tablero
 def getValueOfPiece(letter):
         if letter == 'r':
             return 50
@@ -180,6 +196,7 @@ def getValueOfPiece(letter):
 
         return 0
 
+#funcion recursiva para la ia
 def minMaxMax(boardCopy,movement,depth):
     if depth < 0:
         value = evaluateBoard(boardCopy,movement)
@@ -196,6 +213,7 @@ def minMaxMax(boardCopy,movement,depth):
             result = evaluation
     return result
 
+#funcion recursiva para la ia
 def minMaxMin(boardCopy,movement,depth):
     if depth < 0:
         value = evaluateBoard(boardCopy,movement)
@@ -212,12 +230,13 @@ def minMaxMin(boardCopy,movement,depth):
             result = evaluation
     return result
 
+#funcion principal que espera la interaccion del usuario
 def main(WIN, WIDTH):
     movement = ""
     grid = make_grid(8, WIDTH)
     while True:
-        pygame.time.delay(50) ##stops cpu dying
-        for event in pygame.event.get(): #This quits the program if the player closes the window
+        pygame.time.delay(50) #se detiene en caso de durar mucho
+        for event in pygame.event.get(): #cierra el programa si el jugador cierra la ventana
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -243,7 +262,7 @@ def main(WIN, WIDTH):
                         movement = machine_move(board.copy())
                         board.push(chess.Move.from_uci(movement))
                         movement = ""
-
+            #para actualizar la pantalla con la nueva configuración del tablero y las piezas
             update_display(WIN, grid, 8, WIDTH)
 
 
