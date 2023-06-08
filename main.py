@@ -10,7 +10,7 @@ WIDTH = 650
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("Chess")
 WHITE = (255, 255, 255)
-GREY = (128, 128, 128)
+GREY = (111, 28, 70)
 YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
@@ -247,6 +247,4 @@ def main(WIN, WIDTH):
             update_display(WIN, grid, 8, WIDTH)
 
 
-
 main(WIN, WIDTH)
-
